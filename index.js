@@ -12,16 +12,21 @@ const path = require('path')
 
 const PORT = process.env.PORT || 5000;
 
-
 const express = require('express');
 const cookieParser = require('cookie-parser'); // ← подключаешь
 
 const app = express();
 
+const allowedOrigins = [
+    'http://localhost:3000',             // локальная разработка
+    'https://vishy.vercel.app'  // фронт на Vercel
+  ];
+
 app.use(cors({
-    origin: 'http://localhost:3000', // ✅ адрес фронта (можешь указать свой, если другой)
-    credentials: true,               // ✅ обязательно для передачи кук
+    origin: allowedOrigins, 
+    credentials: true,               
 }));
+
 app.use(cookieParser()); 
 
 app.use(express.json({limit: "10mb", extended: true}));

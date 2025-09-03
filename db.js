@@ -8,5 +8,15 @@ module.exports = new Sequelize(
         dialect: 'postgres',
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false, // важно для Supabase
+            },
+        },
+        logging: false, // отключаем лишние логи
+        // dialectModuleOptions: {
+        //     family: 6 // используем IPv6
+        // }
     }
 )

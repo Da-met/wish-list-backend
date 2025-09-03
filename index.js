@@ -18,14 +18,20 @@ const cookieParser = require('cookie-parser'); // ← подключаешь
 const app = express();
 
 const allowedOrigins = [
-    'http://localhost:3000',             // локальная разработка
-    'https://vishy.vercel.app'  // фронт на Vercel
+    'http://localhost:5173',   // фронт локально
+    'https://vishy.vercel.app' // фронт на Vercel
   ];
-
-app.use(cors({
-    origin: allowedOrigins, 
-    credentials: true,               
-}));
+  
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true
+  }));
 
 app.use(cookieParser()); 
 

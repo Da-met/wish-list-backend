@@ -21,16 +21,18 @@ const allowedOrigins = [
     'http://localhost:5173',   // фронт локально
     'https://vishy.vercel.app' // фронт на Vercel
 ];
-  
+
 app.use(cors({
-origin: allowedOrigins,
-methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-allowedHeaders: ['Content-Type', 'Authorization'],
-credentials: true
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+    allowedHeaders: ['Content-Type','Authorization','Accept'],
 }));
 
-// Чтобы Express не ругался на OPTIONS
+// Обработка preflight-запросов
 app.options('*', cors());
+
+
 
 app.use(cookieParser()); 
 
@@ -53,15 +55,25 @@ const start = async () => {
     try {
         await sequelize.authenticate()
         await sequelize.sync()
-        app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
+        // app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
+        console.log('✅ DB connected successfully');
     } catch (error) {
         console.log('ERROR!!!!!!!!!!',error)
     }
 }
 
-start()
+// start()
 
+// Запускаем только локально
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 5000;
+    start().then(() => {
+        app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+    });
+}
 
+// Для Vercel — экспортируем app
+module.exports = app;
 
 // sequelize.sync({ alter: true })
 //   .then(() => {

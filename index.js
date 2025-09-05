@@ -9,10 +9,9 @@ const fileUpload = require('express-fileupload')
 const router = require('./routes/index')
 const errorHandler = require('./middleware/ErrorHandlingMiddleware')
 const path = require('path')
-
-const PORT = process.env.PORT || 5000;
-
 const express = require('express');
+// const PORT = process.env.PORT || 5000;
+
 const cookieParser = require('cookie-parser'); // ← подключаешь
 
 const app = express();
@@ -66,14 +65,12 @@ const start = async () => {
     }
 }
 
-// start()
+start()
 
 // Запускаем только локально
 if (process.env.NODE_ENV !== 'production') {
-    const PORT = process.env.PORT || 5000;
-    start().then(() => {
-        app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-    });
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 }
 
 // Для Vercel — экспортируем app

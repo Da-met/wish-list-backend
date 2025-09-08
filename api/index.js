@@ -44,6 +44,11 @@ app.use(express.static(path.resolve(__dirname, 'static')))
 // Middleware для обработки файлов
 app.use(fileUpload());
 
+
+app.get('/', (req, res) => {
+  res.send('✅ Backend is running!');
+});
+
 // API роуты
 app.use('/api', router)
 

@@ -20,6 +20,17 @@ router.get('/health', async (req, res) => {
     }
 });
 
+// Диагностический эндпоинт
+router.get('/debug', (req, res) => {
+  res.json({
+    db_host: process.env.DB_HOST,
+    db_name: process.env.DB_NAME,
+    db_user: process.env.DB_USER,
+    database_url: process.env.DATABASE_URL ? 'set' : 'not set',
+    node_env: process.env.NODE_ENV
+  });
+});
+
 router.use('/user', userRouter)
 router.use('/wish', wishRouter)
 router.use('/reservation', reservationRouter)

@@ -74,15 +74,30 @@ app.use((err, req, res, next) => {
 
 
 // Функция для старта сервера и подключения к БД
+// const startServer = async () => {
+//   try {
+//     await sequelize.authenticate();
+//     await sequelize.sync();
+//     console.log('✅ DB connected successfully');
+//   } catch (error) {
+//     console.error('❌ DB connection error:', error);
+//   }
+// };
+
 const startServer = async () => {
   try {
+    console.log('Attempting DB connection with:', {
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      database: process.env.DB_NAME
+    });
     await sequelize.authenticate();
-    await sequelize.sync();
     console.log('✅ DB connected successfully');
   } catch (error) {
     console.error('❌ DB connection error:', error);
+    console.error('Error details:', error.original);
   }
-};
+}
 
 // Локальная разработка — слушаем порт
 if (process.env.NODE_ENV !== 'production') {

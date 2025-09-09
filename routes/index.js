@@ -1,5 +1,10 @@
+const express = require('express');
+const sequelize = require('../db'); // 👈 ДОБАВЬТЕ ЭТУ СТРОЧКУ
+
+const router = express.Router();
+
 const Router = require('express')
-const router = new Router()
+// const router = new Router()
 
 const userRouter = require('./userRouter')
 const wishRouter = require('./wishRouter')
@@ -11,13 +16,35 @@ const listRouter = require('./listRouter')
 
 // health
 router.get('/health', async (req, res) => {
-    try {
-      await sequelize.authenticate();
-      res.json({ ok: true, msg: 'DB OK' });
-    } catch (e) {
-      console.error('Health DB error:', e && e.stack ? e.stack : e);
-      res.status(500).json({ ok: false, error: e.message });
+  try {
+    console.log('Health check started');
+    
+    // Проверяем, что sequelize определен
+    if (!sequelize) {
+      throw new Error('Sequelize is not defined');
     }
+    
+    await sequelize.authenticate();
+    console.log('DB authentication successful');
+    
+    // Простой запрос к БД
+    const [result] = await sequelize.query('SELECT NOW() as current_time');
+    
+    res.json({ 
+      ok: true, 
+      msg: 'DB OK',
+      current_time: result[0].current_time,
+      database: 'connected'
+    });
+    
+  } catch (e) {
+    console.error('Health check failed:', e);
+    res.status(500).json({ 
+      ok: false, 
+      error: e.message,
+      details: 'Sequelize connection failed'
+    });
+  }
 });
 
 // Диагностический эндпоинт

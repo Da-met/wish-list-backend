@@ -47,15 +47,24 @@ router.get('/health', async (req, res) => {
   }
 });
 
-// Диагностический эндпоинт
-router.get('/debug', (req, res) => {
-  res.json({
-    db_host: process.env.DB_HOST,
-    db_name: process.env.DB_NAME,
-    db_user: process.env.DB_USER,
-    database_url: process.env.DATABASE_URL ? 'set' : 'not set',
-    node_env: process.env.NODE_ENV
-  });
+router.get('/check-db', async (req, res) => {
+  try {
+    const [tables] = await sequelize.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
+      AND table_name IN ('users', 'lists', 'wishes', 'reservations', 'subscriptions')
+    `);
+    
+    const tableNames = tables.map(t => t.table_name);
+    res.json({
+      tables: tableNames,
+      all_tables_exist: tableNames.length === 5,
+      status: tableNames.length === 5 ? 'ready' : 'missing_tables'
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.use('/user', userRouter)

@@ -19,12 +19,16 @@ const app = express();
 
 const allowedOrigins = [
     'http://localhost:5173',   // фронт локально
-    'https://vishy.vercel.app' // фронт на Vercel
+    'https://vishy.vercel.app', // фронт на Vercel
+    'https://vishy.vercel.app/' // добавьте слэш
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Разрешаем запросы без origin (например, из Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));

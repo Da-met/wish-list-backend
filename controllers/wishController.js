@@ -31,6 +31,8 @@ class WishController {
 
     async getAll(req, res) {
         try {        
+            console.log('📦 Request query:', req.query);
+
             const userId = req.query.u
             // Извлекаем параметры из запроса
             const limit = parseInt(req.query.limit) || 6; // Лимит записей на странице
@@ -108,6 +110,7 @@ class WishController {
             // Отправляем результат
             // return res.status(200).json(wishes);
         } catch (error) {
+            console.error('❌ Error in /api/wish:', error);
             // Обработка ошибок
             return res.status(500).json({ message: 'Ошибка при получении желаний', error });
         }
